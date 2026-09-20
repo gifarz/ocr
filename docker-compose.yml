@@ -1,0 +1,21 @@
+# One-command containerized run: `docker compose up --build` (or
+# `make compose-up`). Builds the image from the Dockerfile in this same
+# directory - tesseract + the Indonesian language pack are installed
+# INSIDE the image, so there's nothing to install on the host beyond
+# Docker itself.
+#
+# `restart: unless-stopped` + the Dockerfile's HEALTHCHECK together are
+# what make this "run automatically" in the ops sense, not just "run with
+# one command": Docker restarts the container on crash or on host reboot
+# (given Docker itself is set to start on boot, which is a host-level
+# systemd/OS setting, not something this file can control), and treats an
+# unhealthy container as needing a restart even if the process technically
+# didn't exit.
+services:
+  ocr-service:
+    build: .
+    ports:
+      - "${PORT:-8088}:8088"
+    env_file:
+      - .env
+    restart: unless-stopped

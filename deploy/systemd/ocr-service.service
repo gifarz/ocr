@@ -1,0 +1,32 @@
+# systemd unit template - the third deployment path app/config.py's own
+# docstring already mentions (PM2/systemd/Docker). Use this one if the
+# host doesn't run PM2 and isn't using docker-compose.yml.
+#
+# Install:
+#   sudo cp deploy/systemd/ocr-service.service /etc/systemd/system/
+#   sudo systemctl daemon-reload
+#   sudo systemctl enable --now ocr-service   # starts now AND on every future boot
+#
+# Update WorkingDirectory/ExecStart below to match the actual deploy path
+# and venv location first - the placeholder /opt/complifi-ocr-service
+# almost certainly isn't where this actually lives.
+#
+# Logs: `journalctl -u ocr-service -f`
+
+[Unit]
+Description=CompliFi OCR Service (FastAPI/uvicorn)
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/complifi-ocr-service
+EnvironmentFile=/opt/complifi-ocr-service/.env
+ExecStart=/opt/complifi-ocr-service/.venv/bin/uvicorn app.main:app --host 0.0.0.0 --port 8088
+Restart=on-failure
+RestartSec=3
+# Not running as root: create this user first (`sudo useradd --system --no-create-home complifi-ocr`)
+# and chown the deploy directory to it, or swap in an existing service account.
+User=complifi-ocr
+
+[Install]
+WantedBy=multi-user.target
