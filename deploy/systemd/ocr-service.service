@@ -21,7 +21,7 @@ After=network.target
 Type=simple
 WorkingDirectory=/opt/complifi-ocr-service
 EnvironmentFile=/opt/complifi-ocr-service/.env
-ExecStart=/opt/complifi-ocr-service/.venv/bin/uvicorn app.main:app --host 0.0.0.0 --port 8088
+ExecStart=/opt/complifi-ocr-service/.venv/bin/uvicorn app.main:app --host 0.0.0.0 --port 8089
 Restart=on-failure
 RestartSec=3
 # Not running as root: create this user first (`sudo useradd --system --no-create-home complifi-ocr`)

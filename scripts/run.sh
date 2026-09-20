@@ -51,7 +51,7 @@ if [ ! -f .env ] && [ -f .env.example ]; then
     cp .env.example .env
 fi
 
-PORT="${PORT:-8088}"
+PORT="${PORT:-8089}"
 
 case "$MODE" in
     dev)

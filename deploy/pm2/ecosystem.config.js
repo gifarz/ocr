@@ -20,7 +20,7 @@ module.exports = {
       // an activated shell - PM2 doesn't run this inside a login shell,
       // so a bare `uvicorn` on PATH can't be assumed.
       script: ".venv/bin/uvicorn",
-      args: "app.main:app --host 0.0.0.0 --port 8088",
+      args: "app.main:app --host 0.0.0.0 --port 8089",
       cwd: __dirname + "/../..",
       interpreter: "none",
       env: {
