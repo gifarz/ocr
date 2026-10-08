@@ -49,6 +49,14 @@ MAX_BOX_HEIGHT = 160.0
 # signer's printed name" rather than a coincidental partial match.
 MIN_MATCH_SCORE = 0.6
 
+# How far (in points / pixels) below a rule the top of the name's text box
+# may sit and still count as "this rule is above the name". PyMuPDF's line
+# box includes the font's ascent, so it reaches a few points ABOVE the
+# visible glyphs; a name set tight under its cell's top rule therefore has
+# rect.y0 slightly above that rule. A 1pt tolerance dropped the separator
+# rule in that layout and returned a box one whole row too high.
+NAME_TOP_TOLERANCE = 4.0
+
 
 def _normalize(name: str) -> list[str]:
     name = re.sub(r"[.,]", " ", name.lower())
@@ -144,7 +152,7 @@ def _row_bounds(rules: list[RuleLine], name_rect: fitz.Rect, column: tuple[float
         (
             r.pos
             for r in rules
-            if r.orientation == "h" and r.start - 2 <= x_mid <= r.end + 2 and r.pos <= name_rect.y0 + 1
+            if r.orientation == "h" and r.start - 2 <= x_mid <= r.end + 2 and r.pos <= name_rect.y0 + NAME_TOP_TOLERANCE
         ),
         reverse=True,  # nearest-above first
     )
